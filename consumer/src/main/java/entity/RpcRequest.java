@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Arrays;
+
 /**
  * @author ZhouPan
  * @date 2020-08-11
@@ -8,16 +10,16 @@ package entity;
 public class RpcRequest {
 	private String requestId;
 	private int serverVersion;
-	private String interfaceName;
+	private Class<?> interfaceName;
 	private String methodName;
 	private Object[] params;
 	private Class<?>[] paramTypes;
 
-	public String getInterfaceName() {
+	public Class<?> getInterfaceName() {
 		return interfaceName;
 	}
 
-	public void setInterfaceName(String interfaceName) {
+	public void setInterfaceName(Class<?> interfaceName) {
 		this.interfaceName = interfaceName;
 	}
 
@@ -59,5 +61,17 @@ public class RpcRequest {
 
 	public void setParamTypes(Class<?>[] paramTypes) {
 		this.paramTypes = paramTypes;
+	}
+
+	@Override
+	public String toString() {
+		return "RpcRequest{" +
+				"requestId='" + requestId + '\'' +
+				", serverVersion=" + serverVersion +
+				", interfaceName=" + interfaceName +
+				", methodName='" + methodName + '\'' +
+				", params=" + Arrays.toString(params) +
+				", paramTypes=" + Arrays.toString(paramTypes) +
+				'}';
 	}
 }

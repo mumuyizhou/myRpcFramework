@@ -8,16 +8,16 @@ package entity;
 public class RpcRequest {
 	private String requestId;
 	private int serverVersion;
-	private String interfaceName;
+	private Class<?> interfaceName;
 	private String methodName;
 	private Object[] params;
 	private Class<?>[] paramTypes;
 
-	public String getInterfaceName() {
+	public Class<?> getInterfaceName() {
 		return interfaceName;
 	}
 
-	public void setInterfaceName(String interfaceName) {
+	public void setInterfaceName(Class<?> interfaceName) {
 		this.interfaceName = interfaceName;
 	}
 
