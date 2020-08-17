@@ -35,6 +35,7 @@ public class SimpleNioConsumer implements IConsumer {
 				request.setParams(args);
 				try {
 					SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(host, port));
+					socketChannel.configureBlocking(true);
 					ByteBuffer buf = ByteBuffer.allocate(2048);
 					buf.put(JSONObject.toJSON(request).toString().getBytes());
 
@@ -46,22 +47,22 @@ public class SimpleNioConsumer implements IConsumer {
 
 					buf.clear();
 					ByteBuffer responseBuf = ByteBuffer.allocate(2048);
-					//todo read方法在这阻塞的问题
 					socketChannel.read(responseBuf);
 					responseBuf.flip();
-					RpcResponse response = null;
-					while (responseBuf.hasRemaining()) {
-						response = JSONObject.parseObject(new String(responseBuf.array()), RpcResponse.class);
+					RpcResponse response;
+					if (responseBuf.hasRemaining()) {
+						String s = new String(responseBuf.array());
+						response = JSONObject.parseObject(s, RpcResponse.class);
 						if (!request.getRequestId().equals(response.getRequestId())) {
-							throw new RuntimeException("返回的id与发出的id不匹配");
+							throw new IllegalArgumentException(
+									"返回的id与发出的id不匹配");
 						}
-
 						result = response.getResult();
 						if (result instanceof Throwable) {
 							throw (Throwable) result;
 						}
 					}
-
+					socketChannel.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

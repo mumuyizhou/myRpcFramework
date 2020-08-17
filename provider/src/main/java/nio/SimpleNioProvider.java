@@ -40,12 +40,11 @@ public class SimpleNioProvider implements IProvider {
 						ServerSocketChannel channel1 = (ServerSocketChannel) key.channel();
 						SocketChannel socketChannel = channel1.accept();
 						ByteBuffer buf = ByteBuffer.allocate(2048);
-						while (buf.hasRemaining()) {
+						if (buf.hasRemaining()) {
 							socketChannel.read(buf);
 							buf.flip();
 							String received = new String(buf.array());
 							RpcRequest request = JSONObject.parseObject(received, RpcRequest.class);
-							System.out.println(received);
 							Object service1 = RpcServices.getService(request.getInterfaceName().getSimpleName());
 							Object result = null;
 							try {
@@ -57,22 +56,19 @@ public class SimpleNioProvider implements IProvider {
 							} finally {
 								byte[] responseBytes = JSONObject.toJSON(
 										new RpcResponse(request.getRequestId(), result)).toString().getBytes();
-								for (byte responseByte : responseBytes) {
-									System.out.print((char) responseByte);
-								}
 								buf.clear();
 								ByteBuffer buf1 = ByteBuffer.allocate(2048);
 								buf1.put(responseBytes);
 								buf1.flip();
-								while (buf1.hasRemaining()) {
-									socketChannel.write(buf);
-								}
+								socketChannel.write(buf1);
 							}
 
 							socketChannel.close();
 						}
+
 					}
 				}
+				keyIterator.remove();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
