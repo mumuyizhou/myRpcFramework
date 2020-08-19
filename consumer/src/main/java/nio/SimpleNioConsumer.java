@@ -19,6 +19,8 @@ import interfaces.IConsumer;
  * @date 2020-08-11
  */
 public class SimpleNioConsumer implements IConsumer {
+	private SocketChannel socketChannel = null;
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T refer(Class<T> interfaceClass, String host, int port) {
@@ -34,7 +36,8 @@ public class SimpleNioConsumer implements IConsumer {
 				request.setParamTypes(parameterTypes);
 				request.setParams(args);
 				try {
-					SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(host, port));
+
+					socketChannel = SocketChannel.open(new InetSocketAddress(host, port));
 					socketChannel.configureBlocking(true);
 					ByteBuffer buf = ByteBuffer.allocate(2048);
 					buf.put(JSONObject.toJSON(request).toString().getBytes());
@@ -62,10 +65,11 @@ public class SimpleNioConsumer implements IConsumer {
 							throw (Throwable) result;
 						}
 					}
-					socketChannel.close();
+//					socketChannel.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				socketChannel.close();
 				return result;
 			}
 		});

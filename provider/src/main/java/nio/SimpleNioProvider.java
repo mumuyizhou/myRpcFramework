@@ -11,6 +11,9 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSONObject;
 import entity.RpcRequest;
 import entity.RpcResponse;
@@ -22,6 +25,8 @@ import services.RpcServices;
  * @date 2020-08-10
  */
 public class SimpleNioProvider implements IProvider {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleNioProvider.class);
+
 	@Override
 	public void expose(Object service, int port) {
 		try (Selector selector = Selector.open()) {
@@ -61,8 +66,9 @@ public class SimpleNioProvider implements IProvider {
 								buf1.put(responseBytes);
 								buf1.flip();
 								socketChannel.write(buf1);
+								LOGGER.info("服务:{} 成功调用,方法名为{},消费者ip为{}", request.getInterfaceName() , request.getMethodName(),
+										socketChannel.getRemoteAddress());
 							}
-
 							socketChannel.close();
 						}
 
@@ -75,4 +81,5 @@ public class SimpleNioProvider implements IProvider {
 		}
 
 	}
+
 }
