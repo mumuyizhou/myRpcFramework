@@ -18,7 +18,7 @@ public class ConsumerApplication {
 		RpcHost host = new RpcHost("127.0.0.1", 8999);
 		HelloService hello = consumer.refer(HelloService.class, "127.0.0.1", 8999);
 		GoodNight good = consumer.refer(GoodNight.class, "127.0.0.1", 8999);
-		for(int i = 0; i < 100000; i++){
+		for (int i = 0; i < 100000; i++) {
 
 			System.out.println(hello.saySomething("ok" + i));
 			try {
@@ -29,5 +29,5 @@ public class ConsumerApplication {
 			System.out.println(good.sayGoodNight("z" + i));
 
 		}
-		}
+	}
 }

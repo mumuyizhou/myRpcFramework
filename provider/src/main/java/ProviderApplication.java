@@ -1,3 +1,4 @@
+import boot.AnnotationScanner;
 import factories.IProviderFactory;
 import factories.NioProviderFactory;
 import impls.GoodNightImpl;
@@ -12,6 +13,7 @@ import services.RpcServices;
 public class ProviderApplication {
 
 	public static void main(String[] args) {
+		AnnotationScanner.main(null);
 		RpcServices.register(new HelloServiceImpl());
 		RpcServices.register(new GoodNightImpl());
 		IProviderFactory factory = new NioProviderFactory();
